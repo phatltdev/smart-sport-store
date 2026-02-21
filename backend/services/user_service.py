@@ -38,7 +38,7 @@ class UserService:
             "full_name": user_data.full_name,
             "email": user_data.email,
             "date_of_birth": user_data.date_of_birth,
-            "gender": user_data.gender.value if user_data.gender else None,
+            "gender": user_data.gender,
             "hashed_password": hashed_password,
             "is_admin": False,
             "created_at": datetime.utcnow()
@@ -182,7 +182,7 @@ class UserService:
         if update_data.date_of_birth is not None:
             update_dict["date_of_birth"] = update_data.date_of_birth
         if update_data.gender is not None:
-            update_dict["gender"] = update_data.gender.value
+            update_dict["gender"] = update_data.gender
         
         if not update_dict:
             raise ValueError("Không có thông tin nào để cập nhật")

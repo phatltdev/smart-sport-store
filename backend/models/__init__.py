@@ -5,7 +5,6 @@ from .user import (
     UserResponse,
     UserInDB,
     TokenResponse,
-    GenderEnum,
     UserUpdate
 )
 
@@ -16,6 +15,5 @@ __all__ = [
     UserResponse,
     UserInDB,
     TokenResponse,
-    GenderEnum,
     UserUpdate
 ]
