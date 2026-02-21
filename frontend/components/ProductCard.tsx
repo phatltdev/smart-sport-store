@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { FiShoppingCart, FiStar } from 'react-icons/fi'
 import type { Product } from './ProductList'
 import LoginModal from './LoginModal'
@@ -29,10 +30,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     <>
       <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
         <div className="relative h-64 overflow-hidden bg-gray-100">
-          <img
+          <Image
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-300"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">
             -{Math.floor(Math.random() * 30) + 10}%

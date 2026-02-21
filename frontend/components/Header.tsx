@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { FiSearch, FiShoppingCart, FiMenu, FiCamera, FiLogIn } from 'react-icons/fi'
 import ImageSearchModal from './ImageSearchModal'
 import LoginModal from './LoginModal'

@@ -143,3 +143,4 @@ export default function ImageSearchModal({ onClose }: ImageSearchModalProps) {
     </div>
   )
 }
+

@@ -19,12 +19,11 @@ const generateMockProducts = (startId: number, count: number): Product[] => {
   const products: Product[] = []
 
   for (let i = 0; i < count; i++) {
-    const productId = startId + i
     products.push({
-      id: productId,
-      name: `Sản phẩm thể thao ${productId}`,
+      id: startId + i,
+      name: `Sản phẩm thể thao ${startId + i}`,
       price: Math.floor(Math.random() * 2000000) + 200000,
-      image: `https://placehold.co/400x400/3b82f6/ffffff?text=SP+${productId}`,
+      image: '/images/image1.jpg', // Using the same image for now
       category: categories[Math.floor(Math.random() * categories.length)],
       rating: Math.floor(Math.random() * 2) + 3.5,
       sold: Math.floor(Math.random() * 1000)
@@ -142,3 +141,4 @@ export default function ProductList() {
     </div>
   )
 }
+
