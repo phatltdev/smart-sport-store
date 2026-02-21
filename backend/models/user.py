@@ -1,21 +1,14 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
-from typing import Optional
-from enum import Enum
-
-
-class GenderEnum(str, Enum):
-    male = "male"
-    female = "female"
-    other = "other"
+from typing import Optional, Literal
 
 
 class UserBase(BaseModel):
     """Base model cho User"""
     full_name: str = Field(..., min_length=2, max_length=100, description="Họ tên người dùng")
     email: EmailStr = Field(..., description="Email người dùng")
-    date_of_birth: datetime = Field(..., description="Ngày sinh")
-    gender: GenderEnum = Field(..., description="Giới tính")
+    date_of_birth: Optional[datetime] = Field(None, description="Ngày sinh")
+    gender: Optional[Literal['male', 'female', 'other']] = Field(None, description="Giới tính (male: nam, female: nữ, other: khác)")
 
 
 class UserCreate(UserBase):
@@ -70,3 +63,9 @@ class UserInDB(UserBase):
     
     class Config:
         populate_by_name = True
+
+
+class UserUpdate(BaseModel):
+    """Model để cập nhật thông tin user"""
+    date_of_birth: Optional[datetime] = Field(None, description="Ngày sinh")
+    gender: Optional[Literal['male', 'female', 'other']] = Field(None, description="Giới tính (male: nam, female: nữ, other: khác)")

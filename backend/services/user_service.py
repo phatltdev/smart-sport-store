@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 from bson import ObjectId
 from pymongo.collection import Collection
-from models import UserCreate, UserResponse, UserInDB
+from models import UserCreate, UserResponse, UserInDB, UserUpdate
 from utils import get_password_hash, verify_password, create_access_token
 
 
@@ -38,7 +38,7 @@ class UserService:
             "full_name": user_data.full_name,
             "email": user_data.email,
             "date_of_birth": user_data.date_of_birth,
-            "gender": user_data.gender.value,
+            "gender": user_data.gender.value if user_data.gender else None,
             "hashed_password": hashed_password,
             "is_admin": False,
             "created_at": datetime.utcnow()
@@ -157,3 +157,53 @@ class UserService:
             "token_type": "bearer",
             "user": user_dict
         }
+    
+    async def update_user_info(self, update_data: UserUpdate, user_email: Optional[str] = None) -> UserResponse:
+        """
+        Cập nhật thông tin user (giới tính, ngày sinh)
+        
+        Args:
+            update_data: Dữ liệu cần cập nhật
+            user_email: Email của user (nếu None sẽ lấy user đầu tiên từ database)
+            
+        Returns:
+            UserResponse: Thông tin user sau khi cập nhật
+            
+        Raises:
+            ValueError: Nếu không tìm thấy user
+        """
+        # Tìm user để cập nhật
+        query = {}
+        if user_email:
+            query = {"email": user_email}
+        
+        # Chuẩn bị dữ liệu cập nhật
+        update_dict = {}
+        if update_data.date_of_birth is not None:
+            update_dict["date_of_birth"] = update_data.date_of_birth
+        if update_data.gender is not None:
+            update_dict["gender"] = update_data.gender.value
+        
+        if not update_dict:
+            raise ValueError("Không có thông tin nào để cập nhật")
+        
+        # Cập nhật trong database
+        if query:
+            # Nếu có query cụ thể, cập nhật user đó
+            result = self.user_collection.update_one(query, {"$set": update_dict})
+            if result.matched_count == 0:
+                raise ValueError("Không tìm thấy user")
+            updated_user = self.user_collection.find_one(query)
+        else:
+            # Nếu không có query, cập nhật user đầu tiên (để test)
+            updated_user = self.user_collection.find_one({})
+            if not updated_user:
+                raise ValueError("Không tìm thấy user")
+            self.user_collection.update_one({"_id": updated_user["_id"]}, {"$set": update_dict})
+            updated_user = self.user_collection.find_one({"_id": updated_user["_id"]})
+        
+        # Convert ObjectId sang string và loại bỏ hashed_password
+        updated_user["_id"] = str(updated_user["_id"])
+        updated_user.pop("hashed_password", None)
+        
+        return UserResponse(**updated_user)
